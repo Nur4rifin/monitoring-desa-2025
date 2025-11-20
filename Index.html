@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Monitoring Kegiatan Desa Kecamatan Bandung Tahun 2025</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .sidebar-overlay { transition: opacity 0.3s ease-in-out; }
+    .sidebar { transform: translateX(-100%); transition: transform 0.3s ease-in-out; }
+    .sidebar.active { transform: translateX(0); }
+    .filter-bar { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-in-out; }
+    .filter-bar.active { max-height: 200px; }
+    .table-hover tbody tr:hover { background-color: rgba(147, 51, 234, 0.1); }
+    .modal { display: none; animation: fadeIn 0.3s; }
+    .modal.active { display: flex; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .scrollbar-thin::-webkit-scrollbar { width: 6px; height: 6px; }
+    .scrollbar-thin::-webkit-scrollbar-track { background: #f1f1f1; }
+    .scrollbar-thin::-webkit-scrollbar-thumb { background: #888; border-radius: 3px; }
+    .scrollbar-thin::-webkit-scrollbar-thumb:hover { background: #555; }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <!-- header, sidebar, UI omitted here for brevity (unchanged) -->
+  <!-- ... paste the same HTML UI you used originally (header, sidebar, table, modal) ... -->
+  <!-- For brevity I'll include the full UI from your previous Index.html exactly (kept unchanged) -->
+  
+  <!-- Main UI (kept same as original) -->
+  <header class="bg-purple-900 text-white shadow-lg">
+      <div class="flex items-center justify-between px-4 py-3">
+          <div class="flex items-center space-x-4">
+              <button id="menuToggle" class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center hover:bg-purple-700 transition">
+                  <i class="fas fa-bars text-gray-100"></i>
+              </button>
+              <h1 class="text-xl font-bold">Monitoring Kegiatan Desa Kecamatan Bandung Tahun 2025</h1>
+          </div>
+          <div class="flex items-center space-x-3">
+              <button id="toggleFilter" class="text-gray-100 hover:text-white transition">
+                  <i class="fas fa-chevron-down"></i>
+              </button>
+              <button id="addInputBtn" class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg transition font-medium">
+                  + Input
+              </button>
+          </div>
+      </div>
+  </header>
+
+  <div id="sidebarOverlay" class="sidebar-overlay fixed inset-0 bg-black bg-opacity-50 z-40 hidden"></div>
+  <aside id="sidebar" class="sidebar fixed left-0 top-0 h-full w-64 bg-purple-800 z-50 shadow-xl">
+      <div class="p-4">
+          <button id="closeSidebar" class="absolute top-4 right-4 text-white hover:text-gray-300">
+              <i class="fas fa-times text-xl"></i>
+          </button>
+          <div class="mt-8 space-y-4">
+              <a href="#" class="block bg-purple-600 text-white px-4 py-3 rounded-lg hover:bg-purple-700 transition">
+                  <i class="fas fa-chart-line mr-2"></i> Dana Desa Tahun 2026
+              </a>
+              <a href="#" class="block bg-purple-500 text-white px-4 py-3 rounded-lg hover:bg-purple-600 transition">
+                  <i class="fas fa-database mr-2"></i> Dana Desa Tahun 2025
+              </a>
+          </div>
+      </div>
+  </aside>
+
+  <main class="container mx-auto px-4 py-6">
+      <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+          <div class="bg-purple-700 text-white px-4 py-3">
+              <div class="overflow-x-auto">
+                  <table class="w-full min-w-[1800px]">
+                      <thead>
+                          <tr class="text-sm">
+                              <th class="px-2 py-2 text-left">No.</th>
+                              <th class="px-2 py-2 text-left">Desa</th>
+                              <th class="px-2 py-2 text-left">Jenis Program</th>
+                              <th class="px-2 py-2 text-left">Kode Rekening</th>
+                              <th class="px-2 py-2 text-left">Uraian APBDes</th>
+                              <th class="px-2 py-2 text-left">Uraian Kegiatan</th>
+                              <th class="px-2 py-2 text-left">Lokasi</th>
+                              <th class="px-2 py-2 text-left">Prioritas</th>
+                              <th class="px-2 py-2 text-left">Kategori Program</th>
+                              <th class="px-2 py-2 text-left">Jenis Kegiatan</th>
+                              <th class="px-2 py-2 text-left">Volume Rencana</th>
+                              <th class="px-2 py-2 text-left">Volume Realisasi</th>
+                              <th class="px-2 py-2 text-left">Satuan</th>
+                              <th class="px-2 py-2 text-left">Anggaran (Rp)</th>
+                              <th class="px-2 py-2 text-left">Realisasi (Rp)</th>
+                              <th class="px-2 py-2 text-left">Sisa (Rp)</th>
+                              <th class="px-2 py-2 text-left">Pemanfaat L</th>
+                              <th class="px-2 py-2 text-left">Pemanfaat P</th>
+                              <th class="px-2 py-2 text-left">Pemanfaat RTM</th>
+                              <th class="px-2 py-2 text-left">Tgl Mulai</th>
+                              <th class="px-2 py-2 text-left">Tgl Selesai</th>
+                              <th class="px-2 py-2 text-left">Aksi</th>
+                          </tr>
+                      </thead>
+                  </table>
+              </div>
+          </div>
+
+          <div id="filterBar" class="filter-bar bg-indigo-600">
+              <div class="px-4 py-3">
+                  <div class="overflow-x-auto">
+                      <div class="flex gap-2 min-w-[1800px]">
+                          <button id="refreshBtn" class="bg-indigo-500 text-white px-3 py-2 rounded hover:bg-indigo-700 transition">
+                              <i class="fas fa-sync-alt"></i>
+                          </button>
+                          <select id="filterDesa" class="px-2 py-2 rounded border border-gray-300">
+                              <option value="">Semua Desa</option>
+                          </select>
+                          <select id="filterJenisProgram" class="px-2 py-2 rounded border border-gray-300">
+                              <option value="">Semua Jenis Program</option>
+                              <option value="Sarpras">Sarpras</option>
+                              <option value="Non Sarpras">Non Sarpras</option>
+                          </select>
+                          <select id="filterKodeRekening" class="px-2 py-2 rounded border border-gray-300">
+                              <option value="">Semua Kode Rekening</option>
+                          </select>
+                          <div class="relative">
+                              <input type="text" id="searchUraian" placeholder="Cari Uraian Kegiatan..." class="pl-8 pr-2 py-2 rounded border border-gray-300">
+                              <i class="fas fa-search absolute left-2 top-3 text-gray-400"></i>
+                          </div>
+                          <select id="filterPrioritas" class="px-2 py-2 rounded border border-gray-300">
+                              <option value="">Semua Prioritas</option>
+                          </select>
+                          <select id="filterKategoriProgram" class="px-2 py-2 rounded border border-gray-300">
+                              <option value="">Semua Kategori Program</option>
+                          </select>
+                          <select id="filterJenisKegiatan" class="px-2 py-2 rounded border border-gray-300">
+                              <option value="">Semua Jenis Kegiatan</option>
+                          </select>
+                          <input type="date" id="tglAwal" class="px-2 py-2 rounded border border-gray-300">
+                          <input type="date" id="tglAkhir" class="px-2 py-2 rounded border border-gray-300">
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+          <div class="overflow-x-auto">
+              <table class="w-full min-w-[1800px] table-hover">
+                  <tbody id="tableBody" class="text-sm"></tbody>
+              </table>
+          </div>
+
+          <div class="bg-gray-100 px-4 py-3 border-t flex justify-between items-center">
+              <div class="flex items-center space-x-4">
+                  <select id="itemsPerPage" class="px-3 py-1 rounded border border-gray-300">
+                      <option value="10">10</option>
+                      <option value="25">25</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                  </select>
+                  <span id="paginationInfo" class="text-sm text-gray-600">1-10 of 0</span>
+              </div>
+              <div class="flex space-x-2">
+                  <button id="firstPage" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 transition disabled:opacity-50" disabled>
+                      <i class="fas fa-angle-double-left"></i>
+                  </button>
+                  <button id="prevPage" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 transition disabled:opacity-50" disabled>
+                      <i class="fas fa-angle-left"></i>
+                  </button>
+                  <button id="nextPage" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 transition disabled:opacity-50" disabled>
+                      <i class="fas fa-angle-right"></i>
+                  </button>
+                  <button id="lastPage" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 transition disabled:opacity-50" disabled>
+                      <i class="fas fa-angle-double-right"></i>
+                  </button>
+              </div>
+          </div>
+      </div>
+  </main>
+
+  <!-- Modal Form (kept same) -->
+  <div id="modalForm" class="modal fixed inset-0 bg-black bg-opacity-50 z-50 items-center justify-center">
+      <div class="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden">
+          <div class="bg-purple-700 text-white px-6 py-4 flex justify-between items-center">
+              <h2 class="text-xl font-bold">Form Input-Edit</h2>
+              <button id="closeModal" class="text-white hover:text-gray-300">
+                  <i class="fas fa-times text-xl"></i>
+              </button>
+          </div>
+
+          <div class="p-6 overflow-y-auto max-h-[calc(90vh-140px)] scrollbar-thin">
+              <h3 class="text-lg font-semibold mb-4 border-b pb-2">Data Kegiatan</h3>
+              <form id="dataForm" class="space-y-4" onsubmit="return false;">
+                  <!-- form fields same as your original file -->
+                  <div class="grid grid-cols-3 gap-4">
+                      <div>
+                          <label class="block text-sm font-medium mb-1">Desa</label>
+                          <select id="inputDesa" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                              <option value="">---Pilih---</option>
+                          </select>
+                      </div>
+                      <div>
+                          <label class="block text-sm font-medium mb-1">Jenis Program</label>
+                          <select id="inputJenisProgram" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                              <option value="">---Pilih---</option>
+                              <option value="Sarpras">Sarpras</option>
+                              <option value="Non Sarpras">Non Sarpras</option>
+                          </select>
+                      </div>
+                      <div>
+                          <label class="block text-sm font-medium mb-1">Kode Rekening</label>
+                          <select id="inputKodeRekening" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                              <option value="">---Pilih---</option>
+                          </select>
+                      </div>
+                  </div>
+
+                  <!-- remaining form fields (kept same) -->
+                  <div class="grid grid-cols-2 gap-4">
+                      <div>
+                          <label class="block text-sm font-medium mb-1">Uraian Kegiatan</label>
+                          <input type="text" id="inputUraianKegiatan" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                      </div>
+                      <div>
+                          <label class="block text-sm font-medium mb-1">Lokasi</label>
+                          <input type="text" id="inputLokasi" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                      </div>
+                  </div>
+
+                  <div class="grid grid-cols-3 gap-4">
+                      <div>
+                          <label class="block text-sm font-medium mb-1">Prioritas</label>
+                          <select id="inputPrioritas" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                              <option value="">---Pilih---</option>
+                          </select>
+                      </div>
+                      <div>
+                          <label class="block text-sm font-medium mb-1">Kategori Program</label>
+                          <select id="inputKategoriProgram" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                              <option value="">---Pilih---</option>
+                          </select>
+                      </div>
+                      <div>
+                          <label class="block text-sm font-medium mb-1">Jenis Kegiatan</label>
+                          <select id="inputJenisKegiatan" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                              <option value="">---Pilih---</option>
+                          </select>
+                      </div>
+                  </div>
+
+                  <div class="grid grid-cols-3 gap-4">
+                      <div>
+                          <label class="block text-sm font-medium mb-1">Volume Rencana</label>
+                          <input type="number" id="inputVolumeRencana" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                      </div>
+                      <div>
+                          <label class="block text-sm font-medium mb-1">Volume Realisasi</label>
+                          <input type="number" id="inputVolumeRealisasi" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                      </div>
+                      <div>
+                          <label class="block text-sm font-medium mb-1">Satuan</label>
+                          <input type="text" id="inputSatuan" placeholder="Orang, OH, Paket, Meter, KPM" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                      </div>
+                  </div>
+
+                  <div class="grid grid-cols-3 gap-4">
+                      <div>
+                          <label class="block text-sm font-medium mb-1">Anggaran (Rp)</label>
+                          <input type="number" id="inputAnggaran" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                      </div>
+                      <div>
+                          <label class="block text-sm font-medium mb-1">Realisasi (Rp)</label>
+                          <input type="number" id="inputRealisasi" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                      </div>
+                      <div>
+                          <label class="block text-sm font-medium mb-1">Sisa (Rp)</label>
+                          <input type="number" id="inputSisa" readonly class="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100">
+                      </div>
+                  </div>
+
+                  <div class="grid grid-cols-3 gap-4">
+                      <div>
+                          <label class="block text-sm font-medium mb-1">Pemanfaat Laki-laki</label>
+                          <input type="number" id="inputPemanfaatL" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                      </div>
+                      <div>
+                          <label class="block text-sm font-medium mb-1">Pemanfaat Perempuan</label>
+                          <input type="number" id="inputPemanfaatP" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                      </div>
+                      <div>
+                          <label class="block text-sm font-medium mb-1">Pemanfaat RTM</label>
+                          <input type="number" id="inputPemanfaatRTM" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                      </div>
+                  </div>
+
+                  <div class="grid grid-cols-2 gap-4">
+                      <div>
+                          <label class="block text-sm font-medium mb-1">Tanggal Mulai</label>
+                          <input type="date" id="inputTglMulai" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                      </div>
+                      <div>
+                          <label class="block text-sm font-medium mb-1">Tanggal Selesai</label>
+                          <input type="date" id="inputTglSelesai" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                      </div>
+                  </div>
+
+                  <div class="flex justify-start">
+                      <div class="w-1/2">
+                          <label class="block text-sm font-medium mb-1">Upload Foto</label>
+                          <input type="file" id="inputFoto" accept="image/*" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                      </div>
+                  </div>
+              </form>
+          </div>
+
+          <div class="bg-gray-100 px-6 py-4 flex justify-end space-x-3">
+              <button id="btnClose" class="px-6 py-2 bg-pink-500 text-white rounded hover:bg-pink-600 transition">Close</button>
+              <button id="btnReset" class="px-6 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition">Reset</button>
+              <button id="btnSubmit" class="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">Submit</button>
+          </div>
+      </div>
+  </div>
+
+  <script>
+    // === global vars ===
+    let dataMaster = {};
+    let dataKegiatan = [];
+    let currentPage = 1;
+    let itemsPerPage = 10;
+    let editingId = null;
+    let isLoading = false;
+    let forcedSampleFallback = false; // only true if server was unreachable after retries
+
+    document.addEventListener('DOMContentLoaded', () => initializeApp());
+
+    // === initialize with retries: prefer GAS; fallback to sample only after attempts ===
+    async function initializeApp() {
+      showLoading();
+      try {
+        if (typeof google !== 'undefined' && google.script) {
+          // try server with retries
+          const success = await tryLoadServerWithRetries(5, 700);
+          if (!success) {
+            // server unreachable after retries -> fallback to sample but mark it
+            forcedSampleFallback = true;
+            loadSampleMasterData();
+            loadSampleData();
+            console.warn('GAS unreachable after retries — using sample data as fallback');
+          }
+        } else {
+          // no google.script available — use sample
+          forcedSampleFallback = true;
+          loadSampleMasterData();
+          loadSampleData();
+        }
+
+        initializeDropdowns();
+        renderTable();
+        setupEventListeners();
+      } catch (e) {
+        console.error('initializeApp error', e);
+        showError('Gagal memuat aplikasi. Silakan refresh halaman.');
+      } finally {
+        hideLoading();
+      }
+    }
+
+    // try to load both master and kegiatan from server with retries.
+    async function tryLoadServerWithRetries(maxAttempts = 5, waitMs = 700) {
+      for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        try {
+          await loadMasterData();
+          await loadData();
+          // If server returned arrays (could be empty arrays) => treat as success
+          if (Array.isArray(dataKegiatan) && typeof dataMaster === 'object') {
+            forcedSampleFallback = false;
+            return true;
+          }
+        } catch (e) {
+          console.warn(`Attempt ${attempt} load from GAS failed`, e);
+        }
+        await new Promise(r => setTimeout(r, waitMs));
+      }
+      return false;
+    }
+
+    // === load master data ===
+    function loadMasterData() {
+      return new Promise((resolve, reject) => {
+        if (typeof google === 'undefined' || !google.script) return reject(new Error('google.script not available'));
+        google.script.run
+          .withSuccessHandler(result => {
+            // Accept result even if empty object/arrays
+            dataMaster = result || {};
+            resolve(result);
+          })
+          .withFailureHandler(err => {
+            reject(err);
+          })
+          .getMasterData();
+      });
+    }
+
+    // === load all kegiatan ===
+    function loadData() {
+      return new Promise((resolve, reject) => {
+        if (typeof google === 'undefined' || !google.script) return reject(new Error('google.script not available'));
+        google.script.run
+          .withSuccessHandler(result => {
+            dataKegiatan = result || [];
+            resolve(result);
+          })
+          .withFailureHandler(err => {
+            reject(err);
+          })
+          .getAllData();
+      });
+    }
+
+    // === saveData (calls server addData/updateData) ===
+    function saveData(formData) {
+      return new Promise((resolve, reject) => {
+        if (typeof google === 'undefined' || !google.script) {
+          // local fallback: mimic server response
+          if (editingId) {
+            const idx = dataKegiatan.findIndex(it => it.id === editingId);
+            if (idx !== -1) dataKegiatan[idx] = { ...formData, id: editingId };
+            return resolve({ success: true, message: 'Data berhasil diperbarui' });
+          } else {
+            const newId = dataKegiatan.length > 0 ? Math.max(...dataKegiatan.map(i => +i.id || 0)) + 1 : 1;
+            dataKegiatan.push({ ...formData, id: newId });
+            return resolve({ success: true, message: 'Data berhasil ditambahkan', row: newId + 1 }); // mimic row = id+1
+          }
+        }
+
+        if (editingId) {
+          google.script.run
+            .withSuccessHandler(res => resolve(res))
+            .withFailureHandler(err => reject(err))
+            .updateData(editingId, formData);
+        } else {
+          google.script.run
+            .withSuccessHandler(res => resolve(res))
+            .withFailureHandler(err => reject(err))
+            .addData(formData);
+        }
+      });
+    }
+
+    // === submitForm: use server returned row to confirm presence on reload ===
+    async function submitForm() {
+      const btn = document.getElementById('btnSubmit');
+      if (btn.disabled) return;
+      btn.disabled = true;
+
+      try {
+        if (!validateForm()) return;
+
+        showLoading();
+
+        const formData = {
+          desa: document.getElementById('inputDesa').value,
+          jenisProgram: document.getElementById('inputJenisProgram').value,
+          kodeRekening: document.getElementById('inputKodeRekening').value,
+          uraianKegiatan: document.getElementById('inputUraianKegiatan').value,
+          lokasi: document.getElementById('inputLokasi').value,
+          prioritas: document.getElementById('inputPrioritas').value,
+          kategoriProgram: document.getElementById('inputKategoriProgram').value,
+          jenisKegiatan: document.getElementById('inputJenisKegiatan').value,
+          volumeRencana: parseFloat(document.getElementById('inputVolumeRencana').value) || 0,
+          volumeRealisasi: parseFloat(document.getElementById('inputVolumeRealisasi').value) || 0,
+          satuan: document.getElementById('inputSatuan').value,
+          anggaran: parseFloat(document.getElementById('inputAnggaran').value) || 0,
+          realisasi: parseFloat(document.getElementById('inputRealisasi').value) || 0,
+          sisa: parseFloat(document.getElementById('inputSisa').value) || 0,
+          pemanfaatL: parseInt(document.getElementById('inputPemanfaatL').value) || 0,
+          pemanfaatP: parseInt(document.getElementById('inputPemanfaatP').value) || 0,
+          pemanfaatRTM: parseInt(document.getElementById('inputPemanfaatRTM').value) || 0,
+          tglMulai: document.getElementById('inputTglMulai').value,
+          tglSelesai: document.getElementById('inputTglSelesai').value,
+          foto: document.getElementById('inputFoto').files && document.getElementById('inputFoto').files.length > 0
+                ? document.getElementById('inputFoto').files[0].name
+                : ''
+        };
+
+        const res = await saveData(formData);
+        showNotification(res && res.message ? res.message : 'Data disimpan');
+
+        // If server returned a row number, wait until that row is visible in getAllData()
+        let targetRow = null;
+        if (res && res.row) targetRow = +res.row;
+        let matched = false;
+
+        if (targetRow && typeof targetRow === 'number') {
+          // server row => expected id in dataKegiatan is row - 1
+          const expectedId = targetRow - 1;
+          matched = await waitForServerRow(expectedId, 8, 800);
+          if (!matched) {
+            // fallback: try one final load then show temp entry if not found
+            try { await loadData(); } catch(e){console.warn(e);}
+            matched = dataKegiatan.some(it => +it.id === expectedId);
+          }
+        } else {
+          // no row returned; use heuristic match (desa + uraian + kode + anggaran)
+          const matchFn = item =>
+            (item.desa || '') === (formData.desa || '') &&
+            (item.kodeRekening || '') === (formData.kodeRekening || '') &&
+            (item.uraianKegiatan || '') === (formData.uraianKegiatan || '') &&
+            (+item.anggaran || 0) === (+formData.anggaran || 0);
+          matched = await waitForMatch(matchFn, 8, 700);
+        }
+
+        if (!matched) {
+          // server not yet showing the row after retries -> add temporary record locally so UI shows it
+          const maxId = dataKegiatan.length > 0 ? Math.max(...dataKegiatan.map(i => +i.id || 0)) : 0;
+          const tempId = maxId + 1;
+          dataKegiatan.push({ ...formData, id: tempId, _temp: true });
+          // Start background sync that will replace temp when server shows up
+          const matchFnBg = item =>
+            (item.desa || '') === (formData.desa || '') &&
+            (item.kodeRekening || '') === (formData.kodeRekening || '') &&
+            (item.uraianKegiatan || '') === (formData.uraianKegiatan || '') &&
+            (+item.anggaran || 0) === (+formData.anggaran || 0);
+          backgroundSync(matchFnBg, 20, 2000);
+        } else {
+          // if matched, ensure we load latest server data (to pick server's canonical record)
+          try { await loadData(); } catch(e){console.warn(e);}
+        }
+
+        closeModal();
+        initializeDropdowns(); // in case master changed
+        renderTable();
+
+      } catch (err) {
+        console.error('submitForm error', err);
+        showError('Gagal menyimpan data: ' + (err && err.message ? err.message : err));
+      } finally {
+        hideLoading();
+        btn.disabled = false;
+      }
+    }
+
+    // wait until server exposes row with id == expectedId (retry loadData)
+    async function waitForServerRow(expectedId, maxAttempts = 8, waitMs = 700) {
+      for (let a = 1; a <= maxAttempts; a++) {
+        try { await loadData(); } catch(e){ console.warn('waitForServerRow loadData failed', e); }
+        if (dataKegiatan.some(it => +it.id === +expectedId)) return true;
+        if (a < maxAttempts) await new Promise(r => setTimeout(r, waitMs));
+      }
+      return false;
+    }
+
+    // wait for any matchFn to be true in dataKegiatan
+    async function waitForMatch(matchFn, maxAttempts = 8, waitMs = 700) {
+      for (let a = 1; a <= maxAttempts; a++) {
+        try { await loadData(); } catch(e){ console.warn('waitForMatch loadData failed', e); }
+        try {
+          if (dataKegiatan.some(matchFn)) return true;
+        } catch(e) { console.warn('matchFn error', e); }
+        if (a < maxAttempts) await new Promise(r => setTimeout(r, waitMs));
+      }
+      return false;
+    }
+
+    // background sync trying to replace temporary entry when server becomes available
+    function backgroundSync(matchFn, maxAttempts = 20, waitMs = 2000) {
+      let attempts = 0;
+      const idInterval = setInterval(async () => {
+        attempts++;
+        try {
+          await loadData();
+          // if server has a matching record, remove temporary duplicates and re-render
+          const serverMatch = dataKegiatan.find(matchFn);
+          if (serverMatch) {
+            // remove local temp entries that match (by _temp flag or by matching fields)
+            dataKegiatan = dataKegiatan.filter(it => {
+              if (it._temp) {
+                // if server has same values, remove temp
+                return !(it.desa === serverMatch.desa &&
+                         it.kodeRekening === serverMatch.kodeRekening &&
+                         it.uraianKegiatan === serverMatch.uraianKegiatan &&
+                         (+it.anggaran || 0) === (+serverMatch.anggaran || 0));
+              }
+              return true;
+            });
+            renderTable();
+            clearInterval(idInterval);
+          } else if (attempts >= maxAttempts) {
+            clearInterval(idInterval);
+          }
+        } catch (e) {
+          console.warn('backgroundSync error', e);
+          if (attempts >= maxAttempts) clearInterval(idInterval);
+        }
+      }, waitMs);
+    }
+
+    // deleteData wrapper
+    function deleteDataFromSheet(id) {
+      return new Promise((resolve, reject) => {
+        if (typeof google === 'undefined' || !google.script) {
+          // local fallback
+          const idx = dataKegiatan.findIndex(it => +it.id === +id);
+          if (idx >= 0) { dataKegiatan.splice(idx, 1); return resolve({ success: true, message: 'Data berhasil dihapus' }); }
+          return resolve({ success: false, message: 'Data tidak ditemukan' });
+        }
+        google.script.run
+          .withSuccessHandler(res => resolve(res))
+          .withFailureHandler(err => reject(err))
+          .deleteData(id);
+      });
+    }
+
+    async function deleteData(id) {
+      if (!confirm('Apakah Anda yakin ingin menghapus data ini?')) return;
+      showLoading();
+      try {
+        const res = await deleteDataFromSheet(id);
+        showNotification(res && res.message ? res.message : 'Data berhasil dihapus');
+        await tryLoadServerWithRetries(4, 600);
+        initializeDropdowns();
+        renderTable();
+      } catch (e) {
+        console.error(e);
+        showError('Gagal menghapus data: ' + (e && e.message ? e.message : e));
+      } finally { hideLoading(); }
+    }
+
+    // === dropdowns, sample data, render, helpers ===
+
+    function initializeDropdowns() {
+      const filterDesa = document.getElementById('filterDesa');
+      const filterKodeRekening = document.getElementById('filterKodeRekening');
+      const filterPrioritas = document.getElementById('filterPrioritas');
+      const filterKategoriProgram = document.getElementById('filterKategoriProgram');
+      const filterJenisKegiatan = document.getElementById('filterJenisKegiatan');
+
+      const inputDesa = document.getElementById('inputDesa');
+      const inputKodeRekening = document.getElementById('inputKodeRekening');
+      const inputPrioritas = document.getElementById('inputPrioritas');
+      const inputKategoriProgram = document.getElementById('inputKategoriProgram');
+      const inputJenisKegiatan = document.getElementById('inputJenisKegiatan');
+
+      // reset
+      filterDesa.innerHTML = '<option value="">Semua Desa</option>';
+      inputDesa.innerHTML = '<option value="">---Pilih---</option>';
+      filterKodeRekening.innerHTML = '<option value="">Semua Kode Rekening</option>';
+      inputKodeRekening.innerHTML = '<option value="">---Pilih---</option>';
+      filterPrioritas.innerHTML = '<option value="">Semua Prioritas</option>';
+      inputPrioritas.innerHTML = '<option value="">---Pilih---</option>';
+      filterKategoriProgram.innerHTML = '<option value="">Semua Kategori Program</option>';
+      inputKategoriProgram.innerHTML = '<option value="">---Pilih---</option>';
+      filterJenisKegiatan.innerHTML = '<option value="">Semua Jenis Kegiatan</option>';
+      inputJenisKegiatan.innerHTML = '<option value="">---Pilih---</option>';
+
+      if (dataMaster && Object.keys(dataMaster).length > 0) {
+        (dataMaster.desa || []).forEach(v => { filterDesa.innerHTML += `<option value="${v}">${v}</option>`; inputDesa.innerHTML += `<option value="${v}">${v}</option>`; });
+        (dataMaster.kodeRekening || []).forEach(v => { filterKodeRekening.innerHTML += `<option value="${v}">${v}</option>`; inputKodeRekening.innerHTML += `<option value="${v}">${v}</option>`; });
+        (dataMaster.prioritas || []).forEach(v => { filterPrioritas.innerHTML += `<option value="${v}">${v}</option>`; inputPrioritas.innerHTML += `<option value="${v}">${v}</option>`; });
+        (dataMaster.kategoriProgram || []).forEach(v => { filterKategoriProgram.innerHTML += `<option value="${v}">${v}</option>`; inputKategoriProgram.innerHTML += `<option value="${v}">${v}</option>`; });
+        (dataMaster.jenisKegiatan || []).forEach(v => { filterJenisKegiatan.innerHTML += `<option value="${v}">${v}</option>`; inputJenisKegiatan.innerHTML += `<option value="${v}">${v}</option>`; });
+      } else {
+        // if no master from server and fallback flagged, load sample master
+        if (forcedSampleFallback) {
+          loadSampleMasterData();
+          (dataMaster.desa || []).forEach(v => { filterDesa.innerHTML += `<option value="${v}">${v}</option>`; inputDesa.innerHTML += `<option value="${v}">${v}</option>`; });
+          (dataMaster.kodeRekening || []).forEach(v => { filterKodeRekening.innerHTML += `<option value="${v}">${v}</option>`; inputKodeRekening.innerHTML += `<option value="${v}">${v}</option>`; });
+          (dataMaster.prioritas || []).forEach(v => { filterPrioritas.innerHTML += `<option value="${v}">${v}</option>`; inputPrioritas.innerHTML += `<option value="${v}">${v}</option>`; });
+          (dataMaster.kategoriProgram || []).forEach(v => { filterKategoriProgram.innerHTML += `<option value="${v}">${v}</option>`; inputKategoriProgram.innerHTML += `<option value="${v}">${v}</option>`; });
+          (dataMaster.jenisKegiatan || []).forEach(v => { filterJenisKegiatan.innerHTML += `<option value="${v}">${v}</option>`; inputJenisKegiatan.innerHTML += `<option value="${v}">${v}</option>`; });
+        }
+      }
+    }
+
+    function loadSampleMasterData() {
+      dataMaster = {
+        desa: ['Cibiru','Cibiru Hilir','Cipadung','Cipadung Kidul','Cipadung Wetan','Mekar Mulya','Panyileukan','Pasir Biru','Pasir Impun','Pasirendah','Padasuka','Sukamulya','Sukapada','Cisurupan','Cikadut','Cimenyan','Cibodas','Cigadung'],
+        jenisProgram: ['Sarpras','Non Sarpras'],
+        kodeRekening: Array.from({length:216},(_,i)=>`5.1.01.01.${String(i+1).padStart(3,'0')}`),
+        prioritas: ['Sangat Rendah','Rendah','Cukup Rendah','Sedang Rendah','Sedang','Sedang Tinggi','Cukup Tinggi','Tinggi','Cukup Tinggi Sekali','Tinggi Sekali','Sangat Tinggi','Prioritas Utama','Mendesak'],
+        kategoriProgram: ['Pembangunan','Pemberdayaan','Pembinaan Kemasyarakatan','Penanggulangan Bencana','Pemberdayaan Masyarakat','Pembangunan Infrastruktur','Pengembangan Ekonomi','Pelayanan Sosial'],
+        jenisKegiatan: Array.from({length:55},(_,i)=>`Jenis Kegiatan ${i+1}`)
+      };
+    }
+
+    function loadSampleData() {
+      dataKegiatan = [
+        { id:1, desa:'Cibiru', jenisProgram:'Sarpras', kodeRekening:'5.1.01.01.001', uraianAPBDes:'Pembangunan Jalan Desa', uraianKegiatan:'Peningkatan Jalan Utama Desa', lokasi:'Jl. Raya Cibiru', prioritas:'Tinggi', kategoriProgram:'Pembangunan Infrastruktur', jenisKegiatan:'Jenis Kegiatan 1', volumeRencana:500, volumeRealisasi:450, satuan:'Meter', anggaran:500000000, realisasi:450000000, sisa:50000000, pemanfaatL:1000, pemanfaatP:950, pemanfaatRTM:150, tglMulai:'2025-01-01', tglSelesai:'2025-06-30', foto:null },
+        { id:2, desa:'Cipadung', jenisProgram:'Non Sarpras', kodeRekening:'5.1.01.01.002', uraianAPBDes:'Pemberdayaan Masyarakat', uraianKegiatan:'Pelatihan Kewirausahaan', lokasi:'Kantor Desa Cipadung', prioritas:'Sedang', kategoriProgram:'Pemberdayaan Masyarakat', jenisKegiatan:'Jenis Kegiatan 2', volumeRencana:50, volumeRealisasi:45, satuan:'Orang', anggaran:100000000, realisasi:90000000, sisa:10000000, pemanfaatL:20, pemanfaatP:30, pemanfaatRTM:10, tglMulai:'2025-02-01', tglSelesai:'2025-04-30', foto:null }
+      ];
+    }
+
+    function setupEventListeners() {
+      document.getElementById('menuToggle').addEventListener('click', openSidebar);
+      document.getElementById('closeSidebar').addEventListener('click', closeSidebar);
+      document.getElementById('sidebarOverlay').addEventListener('click', closeSidebar);
+      document.getElementById('toggleFilter').addEventListener('click', toggleFilter);
+
+      document.getElementById('addInputBtn').addEventListener('click', () => openModal(null));
+      document.getElementById('closeModal').addEventListener('click', closeModal);
+      document.getElementById('btnClose').addEventListener('click', closeModal);
+      document.getElementById('btnReset').addEventListener('click', resetForm);
+      document.getElementById('btnSubmit').addEventListener('click', submitForm);
+
+      document.getElementById('inputAnggaran').addEventListener('input', calculateSisa);
+      document.getElementById('inputRealisasi').addEventListener('input', calculateSisa);
+
+      document.getElementById('itemsPerPage').addEventListener('change', function() {
+        itemsPerPage = parseInt(this.value);
+        currentPage = 1;
+        renderTable();
+      });
+
+      document.getElementById('firstPage').addEventListener('click', () => goToPage(1));
+      document.getElementById('prevPage').addEventListener('click', () => goToPage(currentPage - 1));
+      document.getElementById('nextPage').addEventListener('click', () => goToPage(currentPage + 1));
+      document.getElementById('lastPage').addEventListener('click', () => goToPage(getTotalPages()));
+
+      document.getElementById('refreshBtn').addEventListener('click', async function() {
+        showLoading();
+        try {
+          await tryLoadServerWithRetries(4, 600);
+          initializeDropdowns();
+          renderTable();
+          showNotification('Data berhasil direfresh!');
+        } catch (e) {
+          showError('Gagal me-refresh data: ' + (e && e.message ? e.message : e));
+        } finally { hideLoading(); }
+      });
+
+      const filterInputs = ['filterDesa','filterJenisProgram','filterKodeRekening','searchUraian','filterPrioritas','filterKategoriProgram','filterJenisKegiatan','tglAwal','tglAkhir'];
+      filterInputs.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('change', () => { currentPage = 1; renderTable(); });
+        if (id === 'searchUraian') el.addEventListener('input', () => { currentPage = 1; renderTable(); });
+      });
+    }
+
+    function openSidebar() { document.getElementById('sidebar').classList.add('active'); document.getElementById('sidebarOverlay').classList.remove('hidden'); }
+    function closeSidebar() { document.getElementById('sidebar').classList.remove('active'); document.getElementById('sidebarOverlay').classList.add('hidden'); }
+    function toggleFilter() { const filterBar = document.getElementById('filterBar'); const icon = document.querySelector('#toggleFilter i'); filterBar.classList.toggle('active'); icon.classList.toggle('fa-chevron-down'); icon.classList.toggle('fa-chevron-up'); }
+
+    function openModal(id = null) {
+      editingId = id;
+      resetForm();
+      if (id) {
+        const data = dataKegiatan.find(item => +item.id === +id);
+        if (data) populateForm(data);
+      }
+      document.getElementById('modalForm').classList.add('active');
+    }
+    function closeModal() { document.getElementById('modalForm').classList.remove('active'); resetForm(); editingId = null; }
+
+    function populateForm(data) {
+      document.getElementById('inputDesa').value = data.desa || '';
+      document.getElementById('inputJenisProgram').value = data.jenisProgram || '';
+      document.getElementById('inputKodeRekening').value = data.kodeRekening || '';
+      document.getElementById('inputUraianKegiatan').value = data.uraianKegiatan || '';
+      document.getElementById('inputLokasi').value = data.lokasi || '';
+      document.getElementById('inputPrioritas').value = data.prioritas || '';
+      document.getElementById('inputKategoriProgram').value = data.kategoriProgram || '';
+      document.getElementById('inputJenisKegiatan').value = data.jenisKegiatan || '';
+      document.getElementById('inputVolumeRencana').value = data.volumeRencana || '';
+      document.getElementById('inputVolumeRealisasi').value = data.volumeRealisasi || '';
+      document.getElementById('inputSatuan').value = data.satuan || '';
+      document.getElementById('inputAnggaran').value = data.anggaran || '';
+      document.getElementById('inputRealisasi').value = data.realisasi || '';
+      document.getElementById('inputSisa').value = data.sisa || '';
+      document.getElementById('inputPemanfaatL').value = data.pemanfaatL || '';
+      document.getElementById('inputPemanfaatP').value = data.pemanfaatP || '';
+      document.getElementById('inputPemanfaatRTM').value = data.pemanfaatRTM || '';
+      document.getElementById('inputTglMulai').value = data.tglMulai || '';
+      document.getElementById('inputTglSelesai').value = data.tglSelesai || '';
+    }
+
+    function resetForm() {
+      document.getElementById('dataForm').reset();
+      document.getElementById('inputSisa').value = '';
+      document.querySelectorAll('#dataForm .border-red-500').forEach(el => el.classList.remove('border-red-500'));
+    }
+
+    function calculateSisa() {
+      const anggaran = parseFloat(document.getElementById('inputAnggaran').value) || 0;
+      const realisasi = parseFloat(document.getElementById('inputRealisasi').value) || 0;
+      document.getElementById('inputSisa').value = anggaran - realisasi;
+    }
+
+    function renderTable() {
+      const filtered = getFilteredData();
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const endIndex = Math.min(startIndex + itemsPerPage, filtered.length);
+      const pageData = filtered.slice(startIndex, endIndex);
+
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = '';
+
+      if (pageData.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="22" class="text-center py-4 text-gray-500">Tidak ada data</td></tr>';
+      } else {
+        pageData.forEach((item, idx) => {
+          const row = document.createElement('tr');
+          row.className = 'border-b hover:bg-purple-50 transition';
+          row.innerHTML = `
+            <td class="px-2 py-2">${startIndex + idx + 1}</td>
+            <td class="px-2 py-2">${item.desa || '-'}</td>
+            <td class="px-2 py-2">${item.jenisProgram || '-'}</td>
+            <td class="px-2 py-2">${item.kodeRekening || '-'}</td>
+            <td class="px-2 py-2">${item.uraianAPBDes || '-'}</td>
+            <td class="px-2 py-2">${item.uraianKegiatan || '-'}</td>
+            <td class="px-2 py-2">${item.lokasi || '-'}</td>
+            <td class="px-2 py-2">${item.prioritas || '-'}</td>
+            <td class="px-2 py-2">${item.kategoriProgram || '-'}</td>
+            <td class="px-2 py-2">${item.jenisKegiatan || '-'}</td>
+            <td class="px-2 py-2 text-right">${item.volumeRencana || '-'}</td>
+            <td class="px-2 py-2 text-right">${item.volumeRealisasi || '-'}</td>
+            <td class="px-2 py-2">${item.satuan || '-'}</td>
+            <td class="px-2 py-2 text-right">${formatCurrency(item.anggaran)}</td>
+            <td class="px-2 py-2 text-right">${formatCurrency(item.realisasi)}</td>
+            <td class="px-2 py-2 text-right">${formatCurrency(item.sisa)}</td>
+            <td class="px-2 py-2 text-right">${item.pemanfaatL || '-'}</td>
+            <td class="px-2 py-2 text-right">${item.pemanfaatP || '-'}</td>
+            <td class="px-2 py-2 text-right">${item.pemanfaatRTM || '-'}</td>
+            <td class="px-2 py-2">${item.tglMulai || '-'}</td>
+            <td class="px-2 py-2">${item.tglSelesai || '-'}</td>
+            <td class="px-2 py-2">
+              <button onclick="openModal(${item.id})" class="text-blue-600 hover:text-blue-800 mr-2" type="button"><i class="fas fa-edit"></i></button>
+              <button onclick="deleteData(${item.id})" class="text-red-600 hover:text-red-800" type="button"><i class="fas fa-trash"></i></button>
+            </td>
+          `;
+          tbody.appendChild(row);
+        });
+      }
+
+      updatePagination(filtered.length, startIndex + 1, endIndex);
+    }
+
+    function getFilteredData() {
+      let filtered = [...dataKegiatan];
+      const filterDesa = document.getElementById('filterDesa').value;
+      const filterJenisProgram = document.getElementById('filterJenisProgram').value;
+      const filterKodeRekening = document.getElementById('filterKodeRekening').value;
+      const searchUraian = document.getElementById('searchUraian').value.toLowerCase();
+      const filterPrioritas = document.getElementById('filterPrioritas').value;
+      const filterKategoriProgram = document.getElementById('filterKategoriProgram').value;
+      const filterJenisKegiatan = document.getElementById('filterJenisKegiatan').value;
+      const tglAwal = document.getElementById('tglAwal').value;
+      const tglAkhir = document.getElementById('tglAkhir').value;
+
+      if (filterDesa) filtered = filtered.filter(item => item.desa === filterDesa);
+      if (filterJenisProgram) filtered = filtered.filter(item => item.jenisProgram === filterJenisProgram);
+      if (filterKodeRekening) filtered = filtered.filter(item => item.kodeRekening === filterKodeRekening);
+      if (searchUraian) filtered = filtered.filter(item => item.uraianKegiatan && item.uraianKegiatan.toLowerCase().includes(searchUraian));
+      if (filterPrioritas) filtered = filtered.filter(item => item.prioritas === filterPrioritas);
+      if (filterKategoriProgram) filtered = filtered.filter(item => item.kategoriProgram === filterKategoriProgram);
+      if (filterJenisKegiatan) filtered = filtered.filter(item => item.jenisKegiatan === filterJenisKegiatan);
+      if (tglAwal) filtered = filtered.filter(item => item.tglMulai >= tglAwal);
+      if (tglAkhir) filtered = filtered.filter(item => item.tglSelesai <= tglAkhir);
+
+      return filtered;
+    }
+
+    function updatePagination(total, start, end) {
+      const totalPages = getTotalPages();
+      document.getElementById('paginationInfo').textContent = `${start}-${end} of ${total}`;
+      document.getElementById('firstPage').disabled = currentPage === 1;
+      document.getElementById('prevPage').disabled = currentPage === 1;
+      document.getElementById('nextPage').disabled = currentPage === totalPages;
+      document.getElementById('lastPage').disabled = currentPage === totalPages;
+    }
+
+    function getTotalPages() {
+      const filtered = getFilteredData();
+      return Math.ceil(filtered.length / itemsPerPage) || 1;
+    }
+
+    function goToPage(page) {
+      const tp = getTotalPages();
+      if (page >= 1 && page <= tp) { currentPage = page; renderTable(); }
+    }
+
+    function formatCurrency(value) {
+      if (value === null || value === undefined || value === '') return '-';
+      return new Intl.NumberFormat('id-ID').format(value);
+    }
+
+    function showLoading() {
+      isLoading = true;
+      const ol = document.createElement('div');
+      ol.id = 'loadingOverlay';
+      ol.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center';
+      ol.innerHTML = `<div class="bg-white rounded-lg p-6 flex flex-col items-center"><div class="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-700"></div><p class="mt-4 text-gray-700">Memproses...</p></div>`;
+      document.body.appendChild(ol);
+    }
+    function hideLoading() {
+      isLoading = false;
+      const ol = document.getElementById('loadingOverlay');
+      if (ol) ol.remove();
+    }
+    function showNotification(message, type='success') {
+      const bg = type==='success'?'bg-green-500':type==='error'?'bg-red-500':'bg-blue-500';
+      const n = document.createElement('div');
+      n.className = `fixed top-4 right-4 ${bg} text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-pulse`;
+      n.textContent = message;
+      document.body.appendChild(n);
+      setTimeout(() => n.remove(), 3000);
+    }
+    function showError(msg) { showNotification(msg,'error'); }
+
+    function validateForm() {
+      const required = ['inputDesa','inputJenisProgram','inputKodeRekening','inputUraianKegiatan','inputPrioritas','inputKategoriProgram','inputJenisKegiatan'];
+      for (const id of required) {
+        const f = document.getElementById(id);
+        if (!f.value) { f.classList.add('border-red-500'); showError(`Field ${f.previousElementSibling.textContent} wajib diisi!`); f.focus(); setTimeout(()=>f.classList.remove('border-red-500'),3000); return false; }
+      }
+      const numeric = ['inputVolumeRencana','inputVolumeRealisasi','inputAnggaran','inputRealisasi','inputPemanfaatL','inputPemanfaatP','inputPemanfaatRTM'];
+      for (const id of numeric) {
+        const v = document.getElementById(id).value;
+        if (v && isNaN(v)) { showError(`${document.getElementById(id).previousElementSibling.textContent} harus berupa angka!`); return false; }
+      }
+      const t1 = document.getElementById('inputTglMulai').value;
+      const t2 = document.getElementById('inputTglSelesai').value;
+      if (t1 && t2 && t1 > t2) { showError('Tanggal mulai tidak boleh lebih besar dari tanggal selesai!'); return false; }
+      return true;
+    }
+  </script>
+</body>
+</html>
